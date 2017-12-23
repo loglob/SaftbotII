@@ -17,16 +17,18 @@ namespace SaftbotII.Commands
         
         public static void Register(MethodInfo method)
         {
-            var attributes = method.GetCustomAttribute(typeof(Command));
+            var attribute = method.GetCustomAttribute(typeof(Command));
 
-            if(attributes != null && method.IsStatic)
+            if(attribute != null && method.IsStatic)
             {
-                Command cmdAttr = (Command)attributes;
-                command cmd = new command();
-
-                cmd.Description = cmdAttr.Description;
-                cmd.Usage = cmdAttr.Usage;
-                cmd.Name = method.Name;
+                Command cmdAttr = (Command)attribute;
+                command cmd = new command
+                {
+                    Description = cmdAttr.Description,
+                    Usage = cmdAttr.Usage,
+                    Name = method.Name,
+                    PermissionLevel = cmdAttr.PermissionLevel
+                };
 
                 if (method.GetParameters().Count() == 1 && method.GetParameters()[0].ParameterType == typeof(CommandInformation))
                 {
@@ -75,13 +77,15 @@ namespace SaftbotII.Commands
             {
                 command toRun = registry[commandName];
 
-                if(cmdinfo.arguments.Length < toRun.ArgumentCount)
+                if (cmdinfo.arguments.Length < toRun.ArgumentCount)
+                   await cmdinfo.messages.Send($"Not enough arguments given!\nProper usage: {toRun.Usage}"); 
+                else
                 {
-                    await cmdinfo.messages.Send($"Not enough arguments given!\nProper usage: {toRun.Usage}");
-                    return;
+                    if (cmdinfo.AuthorEntry.PermissionLevel >= toRun.PermissionLevel)
+                        toRun.function(cmdinfo);
+                    else
+                        await cmdinfo.messages.Send($"You do not have the required permissions to run this command!");
                 }
-
-                toRun.function(cmdinfo);
             }
         }
 
@@ -102,6 +106,7 @@ namespace SaftbotII.Commands
         public string Usage;
         public string Description;
         public string Name;
+        public int PermissionLevel;
 
         public int ArgumentCount
             => Usage.Count(a => a == '<') - Usage.Count(a => a == '[');

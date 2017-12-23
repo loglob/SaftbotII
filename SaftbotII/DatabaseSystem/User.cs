@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SaftbotII.DatabaseSystem
 {
@@ -9,6 +10,23 @@ namespace SaftbotII.DatabaseSystem
         public ulong UserID;
         public byte UserSetting;
         public const byte StandardSetting = 0;
+
+        public int PermissionLevel
+        {
+            get
+            {
+                if (IsDev)
+                    return 3;
+                else if (this[UserSettings.Admin])
+                    return 2;
+                else if (this[UserSettings.DJ])
+                    return 1;
+                else if (this[UserSettings.Ignored])
+                    return -1;
+                else
+                    return 0;
+            }
+        }
 
         #region Constructors
         public User(Server from, ulong userID = 0)
@@ -25,6 +43,9 @@ namespace SaftbotII.DatabaseSystem
             bytesread = 9;
         }
         #endregion
+
+        public bool IsDev
+            => Saftbot.DevUUIDs.Contains(UserID);
 
         #region Settings
         public bool this[UserSettings setting]

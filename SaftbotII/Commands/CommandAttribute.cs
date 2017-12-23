@@ -7,11 +7,16 @@ namespace SaftbotII.Commands
     {
         public string Usage;
         public string Description;
+        public int PermissionLevel;
 
-        public Command(string desc, string use = "")
+        public Command(string desc, string use = "", int permissionLevel = 0)
         {
             Description = desc;
             Usage = use;
+            PermissionLevel = permissionLevel;
         }
+
+        public Command(string desc, int permissionLevel) : this(desc, "", permissionLevel)
+        {   }
     }
 }

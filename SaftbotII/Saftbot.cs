@@ -13,6 +13,12 @@ namespace SaftbotII
     {
         public const string CommandPrefix = "$";
 
+        internal static readonly ulong[] DevUUIDs = new ulong[]
+        {
+            291958246179078144
+
+        };
+
         private const string tokenPath = "./token.txt";
         private DiscordSocketClient client;
 
