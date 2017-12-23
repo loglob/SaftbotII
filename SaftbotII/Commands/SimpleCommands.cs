@@ -42,7 +42,7 @@ namespace SaftbotII.Commands
                 command? asked = CommandRegistry.Fetch(cmdinfo.arguments[0]);
 
                 if (asked.HasValue)
-                    await cmdinfo.messages.Send($"!{asked.Value.Name}: {asked.Value.Description}\n\tUsage: {asked.Value.Description}");
+                    await cmdinfo.messages.Send($"{Saftbot.CommandPrefix}{asked.Value.Name}: {asked.Value.Description}\n\tUsage: {asked.Value.Description}");
                 else
                     await cmdinfo.messages.Send("Unknown command!");
 
@@ -52,7 +52,7 @@ namespace SaftbotII.Commands
             string msg = "";
 
             foreach (command cmd in CommandRegistry.GetCommands)
-                msg += $"!{cmd.Name}:\t{cmd.Description}\n";
+                msg += $"{Saftbot.CommandPrefix}{cmd.Name}:\t{cmd.Description}\n";
             
 
             await cmdinfo.messages.Send(msg);

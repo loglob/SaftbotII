@@ -11,7 +11,7 @@ namespace SaftbotII
 {
     public class Saftbot
     {
-        public const string CommandPrefix = "!";
+        public const string CommandPrefix = "$";
 
         private const string tokenPath = "./token.txt";
         private DiscordSocketClient client;
