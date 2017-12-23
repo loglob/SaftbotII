@@ -17,8 +17,8 @@ namespace SaftbotII
 
             int i = 1;
             string currToTest, prefix, suffix;
-            prefix = Path.GetFileNameWithoutExtension(filepath);
             suffix = Path.GetExtension(filepath);
+            prefix = filepath.Substring(0, filepath.Length - suffix.Length);
 
             do
             {
