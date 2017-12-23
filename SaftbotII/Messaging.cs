@@ -4,21 +4,34 @@ using System.Threading.Tasks;
 
 namespace SaftbotII
 {
+    /// <summary>
+    /// Allows sending of messages or uploading of files to a text channel
+    /// </summary>
     public class Messaging
     {
         private ITextChannel textChannel;
 
+        /// <summary>
+        /// Initialized a messaging-wrapper for the given channel
+        /// </summary>
         public Messaging(ITextChannel textChannel)
         {
             this.textChannel = textChannel;
         }
 
+        /// <summary>
+        /// Sends a message to the channel
+        /// </summary>
         public async Task Send(string message)
         {
             await textChannel.SendMessageAsync(message);
             await Log.Enter($"Sent message '{message}' to channel '{textChannel.Name}'");
         }
 
+        /// <summary>
+        /// Uploads a file to the channel
+        /// </summary>
+        /// <param name="path">Path to the file</param>
         public async Task Upload(string path, string comment = "")
         {
             await textChannel.SendFileAsync(path, comment);

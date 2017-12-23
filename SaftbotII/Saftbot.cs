@@ -11,12 +11,20 @@ namespace SaftbotII
 {
     public class Saftbot
     {
+        /// <summary>
+        /// The prefix before every command send to the bot
+        /// </summary>
         public const string CommandPrefix = "$";
 
+        /// <summary>
+        /// The UUIDs of the bot developers
+        /// </summary>
         internal static readonly ulong[] DevUUIDs = new ulong[]
         {
-            291958246179078144
-
+            // Loglob
+            291958246179078144,
+            // Nico1207
+            66261079918915584
         };
 
         private const string tokenPath = "./token.txt";
@@ -46,6 +54,7 @@ namespace SaftbotII
             await Database.BuildFromFile();
             await Log.Enter("Initialized Database");
 
+            
             await Commands.CommandRegistry.RegisterAll();
             await Log.Enter($"{Commands.CommandRegistry.RegisteredCount} Command(s) loaded.");
 
@@ -88,8 +97,7 @@ namespace SaftbotII
                     {   // On the other hand, any other kind of exception indicates a fatal flaw in whatever command the user was calling
                         await new Messaging((ITextChannel)message.Channel).Send($"The command you tried caused an error!\n" +
                                             $"If this has happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
-
-
+                        
                         await Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");
                         await Log.Enter(ex);
                     }
@@ -97,7 +105,6 @@ namespace SaftbotII
             }
         }
 
-        
         public async Task OnNewServer(SocketGuild guild)
         {
             Database.Fetch(guild.Id, guild.OwnerId)[UserSettings.Admin] = true;

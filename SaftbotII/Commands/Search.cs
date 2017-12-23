@@ -7,14 +7,14 @@ using System.Xml;
 
 namespace SaftbotII.Commands
 {
+    /// <summary>
+    /// Implements search command
+    /// </summary>
     internal static class SearchCommand
     {
         [Command("Searches for the given string on a given provider", "[<Search provider>] <Search string>")]
         public static async void Search(CommandInformation cmdinfo)
         {
-            if (!SearchProvider.Initialized)
-                await SearchProvider.Initialize();
-
             bool ignoreFirst = false;
 
             SearchProvider toUse = SearchProvider.All[(cmdinfo.ServerEntry[ServerSettings.UseGoogle])?"g":"ddg"];
@@ -47,13 +47,31 @@ namespace SaftbotII.Commands
         }
     }
 
+    /// <summary>
+    /// Contains the information required to search with a servive
+    /// </summary>
     struct SearchProvider
     {
+        /// <summary>
+        /// All registeres SearchProviders
+        /// </summary>
         public static Dictionary<string, SearchProvider> All = new Dictionary<string, SearchProvider>();
-        const string Path = "./SearchProviders.xml";
-        const string LoggingPrefix = "[SearchProviderReader]";
-        public static bool Initialized = false;
 
+        /// <summary>
+        /// The file all known providers are stored in
+        /// See the default SearchProviders.xml for the expected formatting
+        /// </summary>
+        const string Path = "./SearchProviders.xml";
+
+        /// <summary>
+        /// The Prefix prepended to all debugging messages from this module
+        /// </summary>
+        const string LoggingPrefix = "[SearchProviderReader]";
+
+        /// <summary>
+        /// Loads and reads the known search provider XML file
+        /// Needs to be called before the search comamnd becomes usable
+        /// </summary>
         public static async Task Initialize()
         {
             if (!File.Exists(Path))
@@ -90,14 +108,28 @@ namespace SaftbotII.Commands
                     await Log.Enter($"{LoggingPrefix} Failed to parse {i}th search provider");
                 }
             }
-
-            Initialized = true;
+            
             await Log.Enter($"{LoggingPrefix} Loaded {All.Count} search providers");
         }
 
+        /// <summary>
+        /// What string is used to escape whitespace
+        /// </summary>
         public string SpaceEscape;
+
+        /// <summary>
+        /// The URL after which the escaped search string is added
+        /// </summary>
         public string BaseURL;
+
+        /// <summary>
+        /// Which service is searched with this provider
+        /// </summary>
         public string Description;
+
+        /// <summary>
+        /// The shorthand used with search to select this provider
+        /// </summary>
         public string Shorthand;
     }
 }

@@ -6,15 +6,33 @@ using System.Threading.Tasks;
 
 namespace SaftbotII.Commands
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal static class CommandRegistry
     {
+        /// <summary>
+        /// Prepended to all Log messages from this module
+        /// </summary>
         const string LogPrefix = "[CommandRegistry]";
 
+        /// <summary>
+        /// The internal registry for commands
+        /// </summary>
         private static Dictionary<string, command> registry = new Dictionary<string, command>();
 
+        /// <summary>
+        /// Adds an enry for the given command
+        /// </summary>
+        /// <param name="command"></param>
         public static void Register(command command)
             => registry.Add(command.Name.ToLower(), command);
         
+        /// <summary>
+        /// Auto-registeres a given method as a command
+        /// Requires method to have a Command attribute
+        /// </summary>
+        /// <param name="method">void method accepting CommandInformation as only argument</param>
         public static void Register(MethodInfo method)
         {
             var attribute = method.GetCustomAttribute(typeof(Command));
@@ -44,7 +62,7 @@ namespace SaftbotII.Commands
         }
 
         /// <summary>
-        /// Registers ALL the commands
+        /// Registers all static methods with a Command attribute that are currently defined as command
         /// </summary>
         public static async Task RegisterAll()
         {
@@ -63,12 +81,19 @@ namespace SaftbotII.Commands
                 Register(cmd);
         }
 
+        /// <summary>
+        /// The Amount of registered commands
+        /// </summary>
         public static int RegisteredCount
             => registry.Count;
-
+        
         public static command[] GetCommands
             => registry.Values.ToArray();
 
+        /// <summary>
+        /// Automatically runs the command of the given name
+        /// checks argument counts and permission levels
+        /// </summary>
         public static async void Run(string commandName, CommandInformation cmdinfo)
         {
             commandName = commandName.ToLower();
@@ -99,7 +124,7 @@ namespace SaftbotII.Commands
             return registry[command];
         }
     }
-
+    
     struct command
     {
         public Action<CommandInformation> function;

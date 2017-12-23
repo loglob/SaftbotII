@@ -1,14 +1,31 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Linq;
 
 namespace SaftbotII.DatabaseSystem
 {
+    /// <summary>
+    /// A user on a server
+    /// </summary>
     internal class User
     {
+        /// <summary>
+        /// The server this user is from
+        /// </summary>
         public Server Server;
+
+        /// <summary>
+        /// The user's UUID
+        /// </summary>
         public ulong UserID;
+
+        /// <summary>
+        /// The raw settings value for this user
+        /// </summary>
         public byte UserSetting;
+
+        /// <summary>
+        /// The setting value used by default
+        /// </summary>
         public const byte StandardSetting = 0;
 
         public int PermissionLevel
@@ -19,7 +36,7 @@ namespace SaftbotII.DatabaseSystem
                     return 3;
                 else if (this[UserSettings.Admin])
                     return 2;
-                else if (this[UserSettings.DJ])
+                else if (this[UserSettings.DJ] || Server[ServerSettings.PlebsCanDJ])
                     return 1;
                 else if (this[UserSettings.Ignored])
                     return -1;
@@ -36,6 +53,12 @@ namespace SaftbotII.DatabaseSystem
             Server = from;
         }
 
+        /// <summary>
+        /// Reads a user from serialized data
+        /// </summary>
+        /// <param name="rawdata">The raw bytes containing all serialized data</param>
+        /// <param name="position">The position for the first byte of the user's data</param>
+        /// <param name="bytesread">The amount of bytes read to produce a user</param>
         public User(byte[] rawdata, int position, out int bytesread)
         {
             UserID = BitConverter.ToUInt64(rawdata, position);
@@ -44,10 +67,18 @@ namespace SaftbotII.DatabaseSystem
         }
         #endregion
 
+        /// <summary>
+        /// Finds out if this user is a developer
+        /// </summary>
         public bool IsDev
             => Saftbot.DevUUIDs.Contains(UserID);
 
         #region Settings
+        /// <summary>
+        /// Retrieves or sets the given setting for this user
+        /// </summary>
+        /// <param name="setting">Setting to retrieve</param>
+        /// <returns></returns>
         public bool this[UserSettings setting]
         {
             get
@@ -71,7 +102,9 @@ namespace SaftbotII.DatabaseSystem
         }
         #endregion
 
-        #region Serialization
+        /// <summary>
+        /// Gets raw byte representation of this user
+        /// </summary>
         public byte[] Serialize()
         {
             byte[] data = new byte[9];
@@ -80,11 +113,6 @@ namespace SaftbotII.DatabaseSystem
             data[8] = UserSetting;
 
             return data;
-
         }
-
-        public async Task UpdateData()
-            => await Database.UpdateData();
-        #endregion
     }
 }

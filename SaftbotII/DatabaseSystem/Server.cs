@@ -4,12 +4,29 @@ using System.Threading.Tasks;
 
 namespace SaftbotII.DatabaseSystem
 {
+    /// <summary>
+    /// A Server the bot is running on
+    /// </summary>
     internal class Server
     {
+        /// <summary>
+        /// This server's ID
+        /// </summary>
         public ulong ServerID;
+
+        /// <summary>
+        /// The settings for this Server
+        /// </summary>
         public ushort SettingsHeader;
+
+        /// <summary>
+        /// The default setting for a server
+        /// </summary>
         public const ushort StandardSettings = 0;
 
+        /// <summary>
+        /// The internal List of users for this server
+        /// </summary>
         private List<User> Users;
 
         #region FetchingUsers

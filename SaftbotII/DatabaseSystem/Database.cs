@@ -9,7 +9,11 @@ namespace SaftbotII.DatabaseSystem
     /// </summary>
     internal static class Database
     {
+        /// <summary>
+        /// The internal list of servers
+        /// </summary>
         private static List<Server> Servers;
+
         public const string PathToDB = "./saftDB.sdb";
         
         #region Serialiation
@@ -97,6 +101,9 @@ namespace SaftbotII.DatabaseSystem
         }
         #endregion
 
+        /// <summary>
+        /// Creates a new entry for the given serverID
+        /// </summary>
         public static void NewEntry(ulong serverID)
         {
             Servers.Add(new Server(serverID));
