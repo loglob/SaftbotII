@@ -23,6 +23,8 @@ namespace SaftbotII.Commands
                 rolls = 1;
 
             string result = "";
+            size = Math.Abs(size);
+            rolls = Math.Abs(rolls);
 
             for (int i = 0; i < rolls; i++)
             {
@@ -54,6 +56,28 @@ namespace SaftbotII.Commands
             
 
             await cmdinfo.messages.Send(msg);
+        }
+
+        [Command("Bulk deletes messages from current channel", "<Amount>")]
+        public static async void Purge(CommandInformation cmdinfo)
+        {
+            if (!Int32.TryParse(cmdinfo.arguments[0], out int toGet))
+                await cmdinfo.messages.Send("Couldn't parse message count!");
+            else
+            {
+                toGet = Math.Abs(toGet);
+
+                if (toGet > 100)
+                {
+                    await cmdinfo.messages.Send("Maximum number of messages to delete at once is 100, sorry!");
+                    toGet = 100;
+                }
+
+                var toDel = cmdinfo.SocketMessage.Channel.GetCachedMessages(toGet);
+                await cmdinfo.SocketMessage.Channel.DeleteMessagesAsync(toDel);
+
+                await cmdinfo.messages.Send($"Deleted {toGet} messages!");
+            }
         }
     }
 }

@@ -6,10 +6,13 @@ using System.IO;
 using System.Threading.Tasks;
 
 #pragma warning disable CS1998
+#pragma warning disable CS4014
 namespace SaftbotII
 {
     public class Saftbot
     {
+        public const string CommandPrefix = "!";
+
         private const string tokenPath = "./token.txt";
         private DiscordSocketClient client;
 
@@ -21,7 +24,7 @@ namespace SaftbotII
 
         internal async Task Main()
         {
-            // Be advised that I have been encounting errors when trying to run this under windows 7.
+            // Be advised that I have been encounting errors when trying to run this under Windows 7.
             // Windows 10 or Linux appear to be running fine
             await Log.Enter("Initializing Discord.NET...");
 
@@ -50,12 +53,12 @@ namespace SaftbotII
             {
                 string content = message.Content.Trim();
 
-                if(content[0] == '!')
+                if(content.StartsWith(CommandPrefix))
                 {
                     try
                     {
                         string[] splitMsg = content.Split(null);
-                        string command = splitMsg[0].Substring(1).ToLower();
+                        string command = splitMsg[0].Substring(CommandPrefix.Length).ToLower();
                         Log.Enter($"Received command '{command}'!");
 
                         Commands.CommandInformation cmdinfo = new Commands.CommandInformation();
@@ -73,8 +76,7 @@ namespace SaftbotII
                     catch(Exception ex)
                     {   // On the other hand, any other kind of exception indicates a fatal flaw in whatever command the user was calling
                         await new Messaging((ITextChannel)message.Channel).Send($"The command you tried caused an error!\n" +
-                                            $"If this happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n" +
-                                            $"(The timestamp is {DateTime.Now.ToString("[HH:mm:ss]")}");
+                                            $"If this happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
 
 
                         await Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");
