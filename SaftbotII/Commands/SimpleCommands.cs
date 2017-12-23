@@ -79,5 +79,11 @@ namespace SaftbotII.Commands
                 await cmdinfo.messages.Send($"Deleted {toGet} messages!");
             }
         }
+
+        [Command("Links to the bot's repo")]
+        public static async void Source(CommandInformation cmdinfo)
+        {
+            await cmdinfo.messages.Send(Exceptions.SaftDatabaseException.repoLink);
+        }
     }
 }

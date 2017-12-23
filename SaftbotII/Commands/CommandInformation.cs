@@ -1,10 +1,12 @@
 ﻿namespace SaftbotII.Commands
 {
-    public struct CommandInformation
+    internal struct CommandInformation
     {
         public Messaging messages;
 
         public string[] arguments;
+
+        public DatabaseSystem.Server ServerEntry;
 
         public Discord.WebSocket.SocketMessage SocketMessage;
     }

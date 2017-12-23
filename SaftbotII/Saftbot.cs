@@ -43,6 +43,8 @@ namespace SaftbotII
             await Commands.CommandRegistry.RegisterAll();
             await Log.Enter($"{Commands.CommandRegistry.RegisteredCount} Command(s) loaded.");
 
+            await Commands.SearchProvider.Initialize();
+
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
@@ -61,10 +63,13 @@ namespace SaftbotII
                         string command = splitMsg[0].Substring(CommandPrefix.Length).ToLower();
                         Log.Enter($"Received command '{command}'!");
 
-                        Commands.CommandInformation cmdinfo = new Commands.CommandInformation();
-                        cmdinfo.SocketMessage = message;
-                        cmdinfo.messages = new Messaging((ITextChannel)message.Channel);
-                        cmdinfo.arguments = Util.SubArray(splitMsg, 1);
+                        Commands.CommandInformation cmdinfo = new Commands.CommandInformation
+                        {
+                            SocketMessage = message,
+                            messages = new Messaging((ITextChannel)message.Channel),
+                            arguments = Util.SubArray(splitMsg, 1),
+                            ServerEntry = Database.Fetch(((SocketGuildChannel)message.Channel).Guild.Id)
+                        };
 
                         Commands.CommandRegistry.Run(command, cmdinfo);
                     }
@@ -76,7 +81,7 @@ namespace SaftbotII
                     catch(Exception ex)
                     {   // On the other hand, any other kind of exception indicates a fatal flaw in whatever command the user was calling
                         await new Messaging((ITextChannel)message.Channel).Send($"The command you tried caused an error!\n" +
-                                            $"If this happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
+                                            $"If this has happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
 
 
                         await Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");

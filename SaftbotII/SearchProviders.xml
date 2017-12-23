@@ -1,0 +1,8 @@
+<Providers>
+	<Provider Shorthand="g" Description="Google">
+		<SearchURL BaseURL="https://www.google.com/search?q=" />
+	</Provider>
+	<Provider Shorthand="ddg" Description="DuckduckGo">
+		<SearchURL BaseURL="https://duckduckgo.com/?q="/>
+	</Provider>
+</Providers>
