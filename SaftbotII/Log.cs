@@ -52,28 +52,29 @@ namespace SaftbotII
         /// Logs a message
         /// </summary>
         /// <param name="addTimestamp">Wether the file's lien should be prepended with a Timestamp</param>
-        public static async Task Enter(string message, bool addTimestamp = true)
+        public static void Enter(string message, bool addTimestamp = true)
         {
             string prefix = addTimestamp ? DateTime.Now.ToString("[HH:mm:ss] "): "";
             string total = prefix + message;
 
             Console.WriteLine(message);
-            await CurrentStream.WriteLineAsync(total);
-            await CurrentStream.FlushAsync();
+            CurrentStream.WriteLine(total);
+            CurrentStream.Flush();
         }
 
         /// <summary>
         /// Logs all relevant data about an exception
         /// </summary>
-        public static async Task Enter(Exception exception)
-            => await Enter($"[ERROR] {exception.GetType()}\n\tMessage: {exception.Message}" +
+        public static void Enter(Exception exception)
+            => Enter($"[ERROR] {exception.GetType()}\n\tMessage: {exception.Message}" +
                         $"\n\tStackTrace: {exception.StackTrace}\n\tSource: {exception.Source}");
         
         /// <summary>
         /// Logs a Discord.Net debug message.
         /// </summary>
+        #pragma warning disable CS1998
         public static async Task Enter(Discord.LogMessage message)
-            => await Enter($"{DiscordNetPrefix} {message.Message.ToString()}");
+            => Enter($"{DiscordNetPrefix} {message.Message.ToString()}");
         
     }
 }

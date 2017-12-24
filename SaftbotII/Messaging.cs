@@ -25,7 +25,7 @@ namespace SaftbotII
         public async Task Send(string message)
         {
             await textChannel.SendMessageAsync(message);
-            await Log.Enter($"Sent message '{message}' to channel '{textChannel.Name}'");
+            Log.Enter($"Sent message '{message}' to channel '{textChannel.Name}'");
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace SaftbotII
         public async Task Upload(string path, string comment = "")
         {
             await textChannel.SendFileAsync(path, comment);
-            await Log.Enter($"Uploaded file '{Path.GetFileName(path)}' with comment '{comment}' " +
+            Log.Enter($"Uploaded file '{Path.GetFileName(path)}' with comment '{comment}' " +
                                           $"to channel '{textChannel.Name}' (Full path: '{path}')");
         }
     }

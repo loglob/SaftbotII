@@ -56,7 +56,7 @@ namespace SaftbotII.Commands
                 }
             }
 
-            Log.Enter($"{LogPrefix} Couldn't register method '{method.Name}'!").Wait();
+            Log.Enter($"{LogPrefix} Couldn't register method '{method.Name}'!");
             return;
             
         }
@@ -64,9 +64,9 @@ namespace SaftbotII.Commands
         /// <summary>
         /// Registers all static methods with a Command attribute that are currently defined as command
         /// </summary>
-        public static async Task RegisterAll()
+        public static void RegisterAll()
         {
-            await Log.Enter($"{LogPrefix} Trying to register all viable commands...");
+            Log.Enter($"{LogPrefix} Trying to register all viable commands...");
 
                            // Fetches all classes contained in the SaftbotII namespace (and sub-namespaces)
             var commands = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace.StartsWith("SaftbotII") && t.IsClass)
@@ -75,7 +75,7 @@ namespace SaftbotII.Commands
                                     // Selects only static methods with a defined 'Command' attribute
                                     .Where(m => m.IsStatic && m.GetCustomAttributes(typeof(Command)).Count() > 0).ToList();
 
-            await Log.Enter($"{LogPrefix} Found {commands.Count()} command(s)!");
+            Log.Enter($"{LogPrefix} Found {commands.Count()} command(s)!");
 
             foreach (var cmd in commands)
                 Register(cmd);

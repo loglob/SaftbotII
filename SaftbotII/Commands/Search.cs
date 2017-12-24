@@ -72,7 +72,7 @@ namespace SaftbotII.Commands
         /// Loads and reads the known search provider XML file
         /// Needs to be called before the search comamnd becomes usable
         /// </summary>
-        public static async Task Initialize()
+        public static void Initialize()
         {
             if (!File.Exists(Path))
                 File.Create(Path);
@@ -81,7 +81,7 @@ namespace SaftbotII.Commands
             xmlDoc.Load(Path);
 
             var providerList = xmlDoc.GetElementsByTagName("Provider");
-            await Log.Enter($"{LoggingPrefix} Found {providerList.Count} Search providers to read"); 
+            Log.Enter($"{LoggingPrefix} Found {providerList.Count} Search providers to read"); 
 
             for (int i = 0; i < providerList.Count; i++)
             {
@@ -105,11 +105,11 @@ namespace SaftbotII.Commands
                 }
                 catch
                 {
-                    await Log.Enter($"{LoggingPrefix} Failed to parse {i}th search provider");
+                    Log.Enter($"{LoggingPrefix} Failed to parse {i}th search provider");
                 }
             }
             
-            await Log.Enter($"{LoggingPrefix} Loaded {All.Count} search providers");
+            Log.Enter($"{LoggingPrefix} Loaded {All.Count} search providers");
         }
 
         /// <summary>

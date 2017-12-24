@@ -41,6 +41,23 @@ namespace SaftbotII
             return newArr;
         }
 
+        public static string AndJoin<T>(this T[] array)
+        {
+            string msg = "";
+            int i;
+
+            for (i = 0; i < array.Length - 2; i++)
+                msg += $"{array[i]}, ";
+
+            if (array.Length > 0)
+                msg += array[i].ToString();
+
+            if (array.Length > 1)
+                msg += $" and {array[i + 1]}";
+
+            return msg;
+        }
+
         #region Bitwise Manipulation
         /// <summary>
         /// Retrieves the bit at the specified position in the specified byte

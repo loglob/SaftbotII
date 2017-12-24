@@ -40,7 +40,7 @@ namespace SaftbotII
         {
             // Be advised that I have been encounting errors when trying to run this under Windows 7.
             // Windows 10 or Linux appear to be running fine
-            await Log.Enter("Initializing Discord.NET...");
+            Log.Enter("Initializing Discord.NET...");
 
             client = new DiscordSocketClient();
             client.Log += Log.Enter;
@@ -49,16 +49,16 @@ namespace SaftbotII
 
             await client.LoginAsync(TokenType.Bot, await token);
             await client.StartAsync();
-            await Log.Enter("Initialization complete!");
+            Log.Enter("Initialization complete!");
 
             await Database.BuildFromFile();
-            await Log.Enter("Initialized Database");
+            Log.Enter("Initialized Database");
 
             
-            await Commands.CommandRegistry.RegisterAll();
-            await Log.Enter($"{Commands.CommandRegistry.RegisteredCount} Command(s) loaded.");
+            Commands.CommandRegistry.RegisterAll();
+            Log.Enter($"{Commands.CommandRegistry.RegisteredCount} Command(s) loaded.");
 
-            await Commands.SearchProvider.Initialize();
+            Commands.SearchProvider.Initialize();
 
             // Block this task until the program is closed.
             await Task.Delay(-1);
@@ -90,7 +90,7 @@ namespace SaftbotII
                     }
                     catch(Exceptions.SaftEceptions saftEx)
                     {   // A saftbot-internal exception technically shouldn't end up here, but it isn't a big enough deal to warn the user
-                        await Log.Enter($"Saftbot-internal Exception caught while trying to execute command:\n\t{message.Content}\n" +
+                        Log.Enter($"Saftbot-internal Exception caught while trying to execute command:\n\t{message.Content}\n" +
                                         $"Content:\n{saftEx}");
                     }
                     catch(Exception ex)
@@ -98,8 +98,8 @@ namespace SaftbotII
                         await new Messaging((ITextChannel)message.Channel).Send($"The command you tried caused an error!\n" +
                                             $"If this has happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
                         
-                        await Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");
-                        await Log.Enter(ex);
+                        Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");
+                        Log.Enter(ex);
                     }
                 }
             }

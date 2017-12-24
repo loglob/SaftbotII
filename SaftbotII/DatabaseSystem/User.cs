@@ -45,6 +45,9 @@ namespace SaftbotII.DatabaseSystem
             }
         }
 
+        public string Mention
+            => $"<@{UserID}>";
+
         #region Constructors
         public User(Server from, ulong userID = 0)
         {
@@ -59,8 +62,9 @@ namespace SaftbotII.DatabaseSystem
         /// <param name="rawdata">The raw bytes containing all serialized data</param>
         /// <param name="position">The position for the first byte of the user's data</param>
         /// <param name="bytesread">The amount of bytes read to produce a user</param>
-        public User(byte[] rawdata, int position, out int bytesread)
+        public User(Server from, byte[] rawdata, int position, out int bytesread)
         {
+            Server = from;
             UserID = BitConverter.ToUInt64(rawdata, position);
             UserSetting = rawdata[position + 8];
             bytesread = 9;

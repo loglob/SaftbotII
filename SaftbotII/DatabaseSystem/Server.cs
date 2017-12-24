@@ -146,15 +146,17 @@ namespace SaftbotII.DatabaseSystem
             position += 2;
 
             // Determine the length of the userdata-block
-            int totalLen = BitConverter.ToInt32(rawdata, position);
+            int userCount = BitConverter.ToInt32(rawdata, position);
             readbytes += 4;
             position += 4;
 
-            int lastpos = position + totalLen;
-            while (position < lastpos)
+            for (int i = 0; i < userCount; i++)
             {
-                Users.Add(new User(rawdata, position, out int bytesread));
-                position += bytesread;
+                User curr = new User(this, rawdata, position, out int currRead);
+                position += currRead;
+                readbytes += currRead;
+
+                Users.Add(curr);
             }
         }
         #endregion

@@ -49,10 +49,8 @@ namespace SaftbotII.DatabaseSystem
             List<byte> data = new List<byte>();
 
             foreach (Server server in Servers)
-            {
                 data.AddRange(server.Serialize());
-            }
-
+            
             return data.ToArray();
         }
 
@@ -70,7 +68,7 @@ namespace SaftbotII.DatabaseSystem
         /// </summary>
         /// <param name="serverID">The server's ID</param>
         /// <param name="createIfNotExists">Inserts a new entry in the databse if none is found</param>
-        public static Server Fetch(ulong serverID, bool createIfNotExists = true)
+        public static Server Fetch(ulong serverID)
         {
             foreach (Server server in Servers)
             {
@@ -78,14 +76,7 @@ namespace SaftbotII.DatabaseSystem
                     return server;
             }
 
-            if(createIfNotExists)
-            {
-                Server newServer = new Server(serverID);
-                Servers.Add(newServer);
-                return newServer;
-            }
-
-            throw new Exceptions.SaftDatabaseException("Nonexistant Server requested");
+            return NewEntry(serverID);
         }
 
         /// <summary>
@@ -93,20 +84,23 @@ namespace SaftbotII.DatabaseSystem
         /// </summary>
         /// <param name="serverID">The server's ID</param>
         /// <param name="userID">The user's ID</param>
-        /// <param name="createUserIfNotExists">Create user entry if none is found</param>
-        /// <param name="createServerIfNotExists">Create server entry if none is found</param>
-        public static User Fetch(ulong serverID, ulong userID, bool createUserIfNotExists = true, bool createServerIfNotExists = true)
-        {
-            return Fetch(serverID, createServerIfNotExists)[userID, createUserIfNotExists];
-        }
+        public static User Fetch(ulong serverID, ulong userID)
+            => Fetch(serverID)[userID];
+
         #endregion
 
         /// <summary>
         /// Creates a new entry for the given serverID
         /// </summary>
-        public static void NewEntry(ulong serverID)
+        public static Server NewEntry(ulong serverID)
         {
-            Servers.Add(new Server(serverID));
+            Server newServer = new Server(serverID);
+
+            Servers.Add(newServer);
+            UpdateData().Wait();
+
+            return newServer;
         }
+        
     }
 }
