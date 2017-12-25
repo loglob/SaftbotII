@@ -10,9 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="saftDB.sdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="SearchProviders.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

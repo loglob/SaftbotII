@@ -57,7 +57,7 @@ namespace SaftbotII
 
             return msg;
         }
-
+        
         #region Bitwise Manipulation
         /// <summary>
         /// Retrieves the bit at the specified position in the specified byte
