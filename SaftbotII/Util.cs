@@ -29,9 +29,24 @@ namespace SaftbotII
             return currToTest;
         }
 
+        /// <summary>
+        /// Returns new array with all elements from the input array starting from startIndex
+        /// </summary>
+        /// <param name="source">Source Array</param>
+        /// <param name="startIndex">First index to take elements from</param>
+        /// <typeparam name="T">Type of array elements</typeparam>
+        /// <returns></returns>
         public static T[] SubArray<T>(T[] source, int startIndex)
             => SubArray(source, startIndex, source.Length - startIndex);
 
+        /// <summary>
+        /// Returns new array with a certain amount of elements from the input array starting from startIndex
+        /// </summary>
+        /// <param name="source">Source array</param>
+        /// <param name="startIndex">First index to take elements from</param>
+        /// <param name="length">Amount of elements</param>
+        /// <typeparam name="T">Type of array elements</typeparam>
+        /// <returns></returns>
         public static T[] SubArray<T>(T[] source, int startIndex, int length)
         {
             T[] newArr = new T[length];
@@ -41,6 +56,13 @@ namespace SaftbotII
             return newArr;
         }
 
+        /// <summary>
+        /// Concatenates all elements of the array as verbal list using commas and a final 'and'
+        /// Example: [1, 2, 3, 4] will return "1, 2, 3 and 4"
+        /// </summary>
+        /// <param name="array">Elements to concatenate</param>
+        /// <typeparam name="T">Type of array elements</typeparam>
+        /// <returns></returns>
         public static string AndJoin<T>(this T[] array)
         {
             string msg = "";
