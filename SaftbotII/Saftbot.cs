@@ -12,7 +12,7 @@ namespace SaftbotII
     public class Saftbot
     {
         /// <summary>
-        /// The prefix before every command send to the bot
+        /// The prefix before every command sent to the bot
         /// </summary>
         public const string CommandPrefix = "$";
 
