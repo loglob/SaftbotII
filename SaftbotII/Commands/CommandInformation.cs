@@ -8,9 +8,8 @@
 
         public DatabaseSystem.Server ServerEntry;
 
-        public Discord.WebSocket.SocketMessage SocketMessage;
+        public Discord.IMessage SocketMessage;
 
-        public DatabaseSystem.User AuthorEntry
-            => ServerEntry[SocketMessage.Author.Id];
+        public DatabaseSystem.User AuthorEntry;
     }
 }

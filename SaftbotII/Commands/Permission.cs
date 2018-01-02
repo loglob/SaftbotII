@@ -1,5 +1,7 @@
-﻿using SaftbotII.DatabaseSystem;
+﻿using Discord.WebSocket;
+using SaftbotII.DatabaseSystem;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SaftbotII.Commands
 {
@@ -29,11 +31,22 @@ namespace SaftbotII.Commands
 
             if (permissionNames.ContainsKey(cmdinfo.arguments[1].ToLower()))
             {
-                foreach (var usr in cmdinfo.SocketMessage.MentionedUsers)
-                {
-                    cmdinfo.ServerEntry[usr.Id][permissionNames[cmdinfo.arguments[1].ToLower()]] = newVal;
-                }
+                UserSettings toChange = permissionNames[cmdinfo.arguments[1].ToLower()];
 
+                foreach (var usr in cmdinfo.SocketMessage.MentionedUserIds)
+                {
+                    // Prevent you from taking the admin status from this server
+                    // or the debug mode's dummy user
+                    if (((toChange == UserSettings.Admin) && (!newVal)) && (
+                            (!OfflineMode.DebugMode.Active && (usr == ((SocketGuildChannel)cmdinfo.SocketMessage.Channel).Guild.OwnerId))
+                            || (OfflineMode.DebugMode.Active && usr == OfflineMode.DebugMode.DummyUser.UserID)))
+                    {
+                        await cmdinfo.messages.Send("Cannot de-admin the server's owner!");
+                        return;
+                    }
+                    else
+                        cmdinfo.ServerEntry[usr][toChange] = newVal;
+                }
                 await cmdinfo.messages.Send("Updated permissions!");
                 await Database.UpdateData();
             }

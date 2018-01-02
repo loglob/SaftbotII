@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using SaftbotII.DatabaseSystem;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 #pragma warning disable CS1998
@@ -34,7 +35,13 @@ namespace SaftbotII
             => File.ReadAllTextAsync(tokenPath);
 
         internal static void Main(string[] args)
-            => new Saftbot().Main().Wait();
+        {
+            // If you pass a 'debug_offline' argument, boot into the offline debugging mode
+            if (args.Contains("debug_offline"))
+                OfflineMode.DebugMode.StartSession().Wait();
+            else
+                new Saftbot().Main().Wait();
+        }
 
         internal async Task Main()
         {
@@ -63,6 +70,7 @@ namespace SaftbotII
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
+        
 
         public async Task HandleMessage(SocketMessage message)
         {
@@ -85,6 +93,8 @@ namespace SaftbotII
                             arguments = Util.SubArray(splitMsg, 1),
                             ServerEntry = Database.Fetch(((SocketGuildChannel)message.Channel).Guild.Id)
                         };
+
+                        cmdinfo.AuthorEntry = cmdinfo.ServerEntry[message.Author.Id];
 
                         Commands.CommandRegistry.Run(command, cmdinfo);
                     }

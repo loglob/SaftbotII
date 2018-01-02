@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Discord;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SaftbotII.Commands
 {
@@ -73,7 +77,7 @@ namespace SaftbotII.Commands
                     toGet = 100;
                 }
 
-                var toDel = cmdinfo.SocketMessage.Channel.GetCachedMessages(toGet);
+                var toDel = (IEnumerable<IMessage>)cmdinfo.SocketMessage.Channel.GetMessagesAsync(toGet);
                 await cmdinfo.SocketMessage.Channel.DeleteMessagesAsync(toDel);
 
                 await cmdinfo.messages.Send($"Deleted {toGet} messages!");

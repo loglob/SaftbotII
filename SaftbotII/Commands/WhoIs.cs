@@ -14,8 +14,8 @@ namespace SaftbotII.Commands
         [Command("Prints information about all mentiond users", "<Users>")]
         public static async void WhoIs(CommandInformation cmdinfo)
         {
-            foreach (var usr in cmdinfo.SocketMessage.MentionedUsers)
-                await cmdinfo.messages.Send(GetInfoOf(cmdinfo.ServerEntry[usr.Id]));
+            foreach (var usr in cmdinfo.SocketMessage.MentionedUserIds)
+                await cmdinfo.messages.Send(GetInfoOf(cmdinfo.ServerEntry[usr]));
             
         }
 

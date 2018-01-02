@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SaftbotII": {
+      "commandName": "Project",
+      "commandLineArgs": "debug_offline"
+    }
+  }
+}
