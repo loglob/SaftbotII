@@ -11,22 +11,34 @@ namespace SaftbotII.Commands
         {
             new Format()
             {
-                names = new string[]{ "hexadecimal", "hexadec" ,"hex", "b16", "base16" },
+                Names = new string[]{ "hexadecimal","hex", "b16" },
+                Description = "A hexadecimal number",
                 Encode = (a) => {
-                    //TODO: Fix the bug where every number is followed by a superfluous zero
-                    string res = "";
+                    string res = "0x";
 
-                    foreach (byte b in a)
-                        res += b.ToString("X");
+                    for (int i = 0; i < a.Length; i++)
+                    {
+                        res += (i == 0)?a[i].ToString("X"):a[i].ToString("X").PadLeft(2, '0');
+			        }
 
                     return res;
                 },
                 Decode = (a) => {
-                    byte[] res = new byte[a.Length / 2];
+                    byte[] res = new byte[(int)Math.Ceiling(a.Length / 2.0)];
+                    
                     a = a.ToUpper();
+                    if(a.StartsWith("0X"))
+                        a = a.Substring(2,a.Length - 2);
 
-                    for (int i = 0; i < a.Length; i++)
-                        res[i/2] = byte.Parse(a.Substring(i, 2), System.Globalization.NumberStyles.HexNumber);
+                    if(a.Length % 2 == 1)
+                        a = '0' + a;
+
+                    for (int i = 0; i < a.Length; i+=2)
+                    {
+                        string toParse = a.Substring(i, 2);
+                        byte val = byte.Parse(toParse, System.Globalization.NumberStyles.HexNumber);
+                        res[i/2] = val;
+                    }
 
                     return res;
                 }
@@ -34,67 +46,107 @@ namespace SaftbotII.Commands
 
             new Format()
             {
-                names = new string[]{ "base64", "b64" },
+                Names = new string[]{ "base64", "b64" },
+                Description = "A base 64 number",
                 Encode = System.Convert.ToBase64String,
-                Decode = System.Convert.FromBase64String
+                Decode = (a) => {
+                    if(a.Length % 4 != 0)
+                    {
+                        int wantedLen = a.Length + 4 - a.Length % 4;
+                        a = a.PadRight(wantedLen, '=');
+                    }
+
+                    return System.Convert.FromBase64String(a);
+                }
             },
 
             new Format()
             {
-                names = new string[]{ "decimal", "base10", "b10" },
-                Encode = (a) => { return new BigInteger(a).ToString(); },
-                Decode = (a) => { return BigInteger.Parse(a).ToByteArray(); }
+                Names = new string[]{ "decimal", "b10" },
+                Description = "A decimal number",
+                Encode = (a) => { return new BigInteger(a.Reverse().ToArray()).ToString(); },
+                Decode = (a) => { return BigInteger.Parse(a).ToByteArray().Reverse().ToArray(); }
             },
 
             new Format()
             {
-                names = new string[]{ "unicode", "plaintext", "text" },
-                Encode  = (a) => ASCIIEncoding.Unicode.GetString(a),
-                Decode = (a) => ASCIIEncoding.Unicode.GetBytes(a)
+                Names = new string[]{ "ascii", "text" },
+                Description = "Plaintext",
+                Encode  = (a) => Encoding.ASCII.GetString(a),
+                Decode = (a) => Encoding.ASCII.GetBytes(a)
+            },
+
+            new Format()
+            {
+                Names = new string[]{ "unicode" },
+                Description = "Unicode plaintext",
+                Encode  = (a) => Encoding.Unicode.GetString(a),
+                Decode = (a) => Encoding.Unicode.GetBytes(a)
             }
         };
+
+        private static string listFormats()
+        {
+            string msg = "Available formats are:";
+
+            foreach (var format in knownFormats)
+            {
+                msg += $"\n\t{String.Join('|',format.Names)}:\t{format.Description}";
+            }
+
+            return msg;
+        }
 
         [Command("Converts text between formats", "<-to/-from> <Format> [<-to/-from>] [<Format>] <Text>")]
         public static async void Convert(CommandInformation cmdinfo)
         {
+            // Set format to ASCII as standard
             Format? input = knownFormats[3];
             Format? output = knownFormats[3];
+            string mode = cmdinfo.arguments[0].ToLower();
 
-            if (cmdinfo.arguments[0] == "-to")
-                output = findFormat(cmdinfo.arguments[1]);
-            else if (cmdinfo.arguments[0] == "-from")
-                input = findFormat(cmdinfo.arguments[1]);
-            else
+            switch(mode)
             {
-                await cmdinfo.messages.Send("Expected 'to' or 'from' as first argument!");
-                return;
-            }
+                case "-to":
+                    output = findFormat(cmdinfo.arguments[1]);
+                    break;
 
+                case "-from":
+                    input = findFormat(cmdinfo.arguments[1]);
+                    break;
+
+                default:
+                    await cmdinfo.messages.Send("Expected '-to' or '-from' as first argument!");
+                    return;
+            }
             bool readExtraData = false;
 
-            if(cmdinfo.arguments.Length >= 4)
+            if (cmdinfo.arguments.Length >= 4)
             {
-                if (cmdinfo.arguments[2] == "-to")
+                string secondaryMode = cmdinfo.arguments[2].ToLower();
+
+                switch (secondaryMode)
                 {
-                    output = findFormat(cmdinfo.arguments[3]);
-                    readExtraData = true;
-                }
-                else if (cmdinfo.arguments[2] == "-from")
-                {
-                    input = findFormat(cmdinfo.arguments[3]);
-                    readExtraData = true;
-                }
+                    case "-to":
+                        output = findFormat(cmdinfo.arguments[3]);
+                        readExtraData = true;
+                    break;
+                    case "-from":
+                        input = findFormat(cmdinfo.arguments[3]);
+                        readExtraData = true;
+                        break;
+            }
             }
 
             if(! input.HasValue)
             {
-                await cmdinfo.messages.Send("Unrecognized input format.");
+                await cmdinfo.messages.Send($"Unrecognized input format.\n{listFormats()}");
                 return;
             }
 
             if(! output.HasValue)
             {
-                await cmdinfo.messages.Send("Unrecognized output format.");
+                await cmdinfo.messages.Send($"Unrecognized output format.\n{listFormats()}");
                 return;
             }
 
@@ -116,7 +168,7 @@ namespace SaftbotII.Commands
             name = name.ToLower();
 
             foreach (var f in knownFormats)
-                if (f.names.Contains(name))
+                if (f.Names.Contains(name))
                     return f;
 
             return null;
@@ -125,8 +177,21 @@ namespace SaftbotII.Commands
 
     struct Format
     {
-        public string[] names;
+        /// <summary>
+        /// An array of names and aliases for this format
+        /// </summary>
+        public string[] Names;
+
+        public string Description;
+
+        /// <summary>
+        /// A function that converts a little-endian byte array to a string representation of this format
+        /// </summary>
         public Func<byte[], string> Encode;
+
+        /// <summary>
+        /// A function that converts a string of this format to a little-endian byte array
+        /// </summary>
         public Func<string, byte[]> Decode;
     }
 }

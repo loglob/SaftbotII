@@ -1,8 +1,6 @@
 ﻿using Discord;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SaftbotII.Commands
 {
@@ -87,7 +85,7 @@ namespace SaftbotII.Commands
         [Command("Links to the bot's repo")]
         public static async void Source(CommandInformation cmdinfo)
         {
-            await cmdinfo.messages.Send(Exceptions.SaftDatabaseException.repoLink);
+            await cmdinfo.messages.Send(Exceptions.SaftException.repoLink);
         }
     }
 }

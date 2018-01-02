@@ -50,7 +50,7 @@ namespace SaftbotII.DatabaseSystem
                 return newUser;
             }
 
-            throw new Exceptions.SaftDatabaseException("Nonexistant User requested");
+            throw new Exceptions.SaftException("Nonexistant User requested");
         }
 
         /// <summary>

@@ -1,10 +1,8 @@
-﻿using SaftbotII.DatabaseSystem;
+﻿using SaftbotII.Commands;
+using SaftbotII.DatabaseSystem;
 using System;
-using System.Threading.Tasks;
-using Discord;
-using System.Collections.Generic;
-using SaftbotII.Commands;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SaftbotII.OfflineMode
 {

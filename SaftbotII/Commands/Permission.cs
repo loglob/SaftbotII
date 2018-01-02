@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
 using SaftbotII.DatabaseSystem;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SaftbotII.Commands
 {
@@ -14,7 +13,7 @@ namespace SaftbotII.Commands
             { "ignored",    UserSettings.Ignored }
         };
 
-        [Command("Grants a permission or takes it from users","<give/take> <Perm name> <users>")]
+        [Command("Grants a permission or takes it from users","<give/take> <Perm name> <users>", PermissionLevel = 2)]
         public static async void Permission(CommandInformation cmdinfo)
         {
             bool newVal;

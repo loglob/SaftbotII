@@ -14,23 +14,29 @@ namespace SaftbotII.Commands
         /// </summary>
         public string Usage;
 
+        /// <summary>
+        /// How the method is used.
+        /// "<>" denotes a necessary argument
+        /// "[<>]" an optional one
+        /// </summary>
         public string Description;
 
         /// <summary>
         /// Permission level required
         /// 0: none, 1: DJ, 2: Admin, 3: Developer
-        /// if smaller than 0 even ignored users cna run this command
+        /// if smaller than 0 even ignored users can run this command
         /// </summary>
-        public int PermissionLevel;
+        public int PermissionLevel = 0;
 
-        public Command(string desc, string use = "", int permissionLevel = 0)
+        /// <summary>
+        /// Mark a method as an executable command
+        /// </summary>
+        /// <param name="desc">The description of what the command does</param>
+        /// <param name="use">How the command is used. "<>" marks necessary arguments, "[<>]" optional ones</param>
+        public Command(string desc, string use = "")
         {
             Description = desc;
             Usage = use;
-            PermissionLevel = permissionLevel;
         }
-
-        public Command(string desc, int permissionLevel) : this(desc, "", permissionLevel)
-        {   }
     }
 }

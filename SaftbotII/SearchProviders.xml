@@ -2,7 +2,22 @@
 	<Provider Shorthand="g" Description="Google">
 		<SearchURL BaseURL="https://www.google.com/search?q=" />
 	</Provider>
-	<Provider Shorthand="ddg" Description="DuckduckGo">
-		<SearchURL BaseURL="https://duckduckgo.com/?q="/>
-	</Provider>
+  <Provider Shorthand="ddg" Description="DuckduckGo">
+    <SearchURL BaseURL="https://duckduckgo.com/?q="/>
+  </Provider>
+  <Provider Shorthand="tpb" Description="The Piratebay">
+    <SearchURL BaseURL="https://thepiratebay.org/search/" SpaceEscape="%20"/>
+  </Provider>
+  <Provider Shorthand="yt" Description="YouTube">
+    <SearchURL BaseURL="https://www.youtube.com/results?search_query="/>
+  </Provider>
+  <Provider Shorthand="st" Description="Steam store">
+    <SearchURL BaseURL="https://store.steampowered.com/search/?term="/>
+  </Provider>
+  <Provider Shorthand="tw" Description="Twitter">
+    <SearchURL BaseURL="https://twitter.com/search?q=" SpaceEscape="%20"/>
+  </Provider>
+  <Provider Shorthand="r" Description="Reddit">
+    <SearchURL BaseURL="https://www.reddit.com/search?q="/>
+  </Provider>
 </Providers>

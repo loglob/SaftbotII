@@ -37,7 +37,7 @@ namespace SaftbotII
         internal static void Main(string[] args)
         {
             // If you pass a 'debug_offline' argument, boot into the offline debugging mode
-            if (args.Contains("debug_offline"))
+            if (args.Contains("offline"))
                 OfflineMode.DebugMode.StartSession().Wait();
             else
                 new Saftbot().Main().Wait();
@@ -98,7 +98,7 @@ namespace SaftbotII
 
                         Commands.CommandRegistry.Run(command, cmdinfo);
                     }
-                    catch(Exceptions.SaftEceptions saftEx)
+                    catch(Exceptions.SaftException saftEx)
                     {   // A saftbot-internal exception technically shouldn't end up here, but it isn't a big enough deal to warn the user
                         Log.Enter($"Saftbot-internal Exception caught while trying to execute command:\n\t{message.Content}\n" +
                                         $"Content:\n{saftEx}");
@@ -106,7 +106,7 @@ namespace SaftbotII
                     catch(Exception ex)
                     {   // On the other hand, any other kind of exception indicates a fatal flaw in whatever command the user was calling
                         await new Messaging((ITextChannel)message.Channel).Send($"The command you tried caused an error!\n" +
-                                            $"If this has happend before, please report it at {Exceptions.SaftDatabaseException.repoLink}\n");
+                                            $"If this has happend before, please report it at {Exceptions.SaftException.repoLink}\n");
                         
                         Log.Enter($"Exception caught while trying to execute command:\n\t{message.Content}");
                         Log.Enter(ex);
