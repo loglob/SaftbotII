@@ -78,10 +78,10 @@ namespace SaftbotII.Commands
 
             new Format()
             {
-                Names = new string[]{ "unicode" },
+                Names = new string[]{ "unicode", "utf8" },
                 Description = "Unicode plaintext",
-                Encode  = (a) => Encoding.Unicode.GetString(a),
-                Decode = (a) => Encoding.Unicode.GetBytes(a)
+                Encode  = (a) => Encoding.UTF8.GetString(a),
+                Decode = (a) => Encoding.UTF8.GetBytes(a)
             }
         };
 
@@ -100,9 +100,10 @@ namespace SaftbotII.Commands
         [Command("Converts text between formats", "<-to/-from> <Format> [<-to/-from>] [<Format>] <Text>")]
         public static async void Convert(CommandInformation cmdinfo)
         {
-            // Set format to ASCII as standard
+            // Set input format to ASCII as standard
             Format? input = knownFormats[3];
-            Format? output = knownFormats[3];
+            // Set input format to Unicode as standard
+            Format? output = knownFormats[4];
             string mode = cmdinfo.arguments[0].ToLower();
 
             switch(mode)
